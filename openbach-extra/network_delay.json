@@ -1,0 +1,272 @@
+{
+    "name": "network_delay",
+    "description": "This network_delay scenario allows to\ncompare the RTT measurement of fping (ICMP) and d-itg (UDP). It\ncan be configured to start the traffic either simultaneously or\nsequentially.\nIt can then, optionally, plot the delay measurements using time-series and CDF.\n",
+    "arguments": {},
+    "constants": {
+        "server_ip": "192.168.178.70",
+        "client_ip": "192.168.178.69",
+        "duration": "10"
+    },
+    "openbach_functions": [
+        {
+            "start_job_instance": {
+                "d-itg_recv": {
+                    "log_buffer_size": [
+                        [
+                            50
+                        ]
+                    ],
+                    "signal_port": [
+                        [
+                            9000
+                        ]
+                    ]
+                },
+                "entity_name": "server"
+            },
+            "id": 0,
+            "label": "#0"
+        },
+        {
+            "start_job_instance": {
+                "d-itg_send": {
+                    "target_address": [
+                        [
+                            "$server_ip"
+                        ]
+                    ],
+                    "sender_address": [
+                        [
+                            "$client_ip"
+                        ]
+                    ],
+                    "dest_path": [
+                        [
+                            "/tmp/"
+                        ]
+                    ],
+                    "granularity": [
+                        [
+                            1000
+                        ]
+                    ],
+                    "traffic_type": [
+                        [
+                            "UDP"
+                        ]
+                    ],
+                    "packet_size": [
+                        [
+                            512
+                        ]
+                    ],
+                    "packet_rate": [
+                        [
+                            1
+                        ]
+                    ],
+                    "port": [
+                        [
+                            8999
+                        ]
+                    ],
+                    "signal_port": [
+                        [
+                            9000
+                        ]
+                    ],
+                    "duration": [
+                        [
+                            "$duration"
+                        ]
+                    ],
+                    "meter": [
+                        [
+                            "rttm"
+                        ]
+                    ]
+                },
+                "entity_name": "client"
+            },
+            "id": 1,
+            "label": "#1",
+            "wait": {
+                "time": 1.0,
+                "launched_ids": [
+                    0
+                ]
+            }
+        },
+        {
+            "stop_job_instances": {
+                "openbach_function_ids": [
+                    0
+                ]
+            },
+            "id": 2,
+            "label": "#2",
+            "wait": {
+                "finished_ids": [
+                    1
+                ]
+            }
+        },
+        {
+            "start_job_instance": {
+                "offset": 0.0,
+                "fping": {
+                    "destination_ip": [
+                        [
+                            "$server_ip"
+                        ]
+                    ]
+                },
+                "entity_name": "client"
+            },
+            "id": 3,
+            "label": "#3",
+            "wait": {
+                "finished_ids": [
+                    0
+                ]
+            }
+        },
+        {
+            "stop_job_instances": {
+                "openbach_function_ids": [
+                    3
+                ]
+            },
+            "id": 4,
+            "label": "#4",
+            "wait": {
+                "time": "$duration",
+                "launched_ids": [
+                    3
+                ]
+            }
+        },
+        {
+            "start_job_instance": {
+                "time_series": {
+                    "jobs": [
+                        [
+                            [
+                                1
+                            ],
+                            [
+                                3
+                            ]
+                        ]
+                    ],
+                    "statistics": [
+                        [
+                            "rtt",
+                            "rtt_sender"
+                        ]
+                    ],
+                    "label": [
+                        [
+                            "RTT delay (ms)"
+                        ]
+                    ],
+                    "title": [
+                        [
+                            "RTTs time series"
+                        ]
+                    ],
+                    "legend": [
+                        [
+                            "d-itg_send (client)"
+                        ],
+                        [
+                            "fping (client)"
+                        ]
+                    ],
+                    "filename": [
+                        [
+                            "time_series_rtt_client_server"
+                        ]
+                    ]
+                },
+                "entity_name": "controller"
+            },
+            "id": 5,
+            "label": "#5",
+            "wait": {
+                "time": 2.0,
+                "finished_ids": [
+                    0,
+                    1,
+                    3
+                ]
+            }
+        },
+        {
+            "start_job_instance": {
+                "histogram": {
+                    "jobs": [
+                        [
+                            [
+                                1
+                            ],
+                            [
+                                3
+                            ]
+                        ]
+                    ],
+                    "bins": [
+                        [
+                            100
+                        ]
+                    ],
+                    "statistics": [
+                        [
+                            "rtt",
+                            "rtt_sender"
+                        ]
+                    ],
+                    "label": [
+                        [
+                            "RTT delay (ms)"
+                        ]
+                    ],
+                    "title": [
+                        [
+                            "RTT CDF"
+                        ]
+                    ],
+                    "legend": [
+                        [
+                            "d-itg_send (client)"
+                        ],
+                        [
+                            "fping (client)"
+                        ]
+                    ],
+                    "cumulative": [
+                        [
+                            true
+                        ]
+                    ],
+                    "filename": [
+                        [
+                            "histogram_rtt_client_server"
+                        ]
+                    ]
+                },
+                "entity_name": "controller"
+            },
+            "id": 6,
+            "label": "#6",
+            "wait": {
+                "time": 2.0,
+                "finished_ids": [
+                    0,
+                    1,
+                    3
+                ]
+            }
+        }
+    ]
+}

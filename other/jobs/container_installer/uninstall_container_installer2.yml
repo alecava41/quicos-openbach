@@ -1,0 +1,2 @@
+- name: Uninstall container_installer2 Job
+  file: path=/opt/openbach/agent/jobs/container_installer2 state=absent
