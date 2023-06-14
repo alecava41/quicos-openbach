@@ -36,11 +36,12 @@ func handleConnection(conn net.Conn) {
 }
 
 func main() {
-	listener, err := net.Listen("tcp", "localhost:8080")
+	listener, err := net.Listen("tcp", ":9999")
 	if err != nil {
 		fmt.Println("Error starting the server:", err)
 		return
 	}
+
 	defer func(listener net.Listener) {
 		err := listener.Close()
 		if err != nil {

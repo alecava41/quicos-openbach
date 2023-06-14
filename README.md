@@ -9,7 +9,7 @@ The repository is organized in the following folders and files:
 - *openbach-extra*: contains the source files of the Openbach-Extra repository
 - *other*: additional files which has been useful to test during the experimental phase:
   - *app*: contains the source files of a small Client/Server application (see [App](./other/app/APP.md) to get more details);
-  - *auditorium-files*: contains JSON files that can be imported into the Openbach platform using the auditorium interface;
+  - *auditorium-files*: contains JSON files that can be imported into the Openbach platform using the auditorium interface (see [Auditorium](./other/auditorium-files/AUDITORIUM.md) to get more details);
   - *jobs*: contains the source files of additional files added to Openbach platform to perform the experiments (see [Jobs](./other/jobs/JOBS.md) to get more details).
 - *Vagrantfile*:  vagrant configuration file to create and run the VMs used to test the Openbach platform;
 - *INSTALL.md*: contains a quick guide to install Openbach.

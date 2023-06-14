@@ -39,6 +39,7 @@ Vagrant.configure("2") do |config|
   
   config.vm.define "server" do |server|
         server.vm.box = "generic/ubuntu2004"
+	server.vm.network "forwarded_port", guest: 9999, host_ip: "0.0.0.0", host: 9999
 	server.vm.network "public_network", ip: "192.168.178.70"
 
 	server.vm.hostname = "server"

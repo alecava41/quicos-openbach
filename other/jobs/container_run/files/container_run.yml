@@ -22,13 +22,19 @@ arguments:
       type: 'str'
       count: 1
       description: Name of the docker image to run.
-    - name: command
-      type: 'str'
-      count: 1
-      description: Command to run inside the container.
   optional:
     - name: name
       type: 'str'
       count: 1
       flag: '-n'
       description: Name to assign to the container.
+    - name: command
+      type: 'str'
+      count: 1
+      flag: '-c'
+      description: Command to run inside the container.
+    - name: port
+      type: 'str'
+      count: 1
+      flag: '-p'
+      description: List of comma separated ports to bind.

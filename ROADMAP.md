@@ -63,10 +63,18 @@ It looks like that the way of working of Openbach is not allowing that. Written 
 ### 2023-06-09
 Meeting with professor Bujari, notes:
 - It looks like that is not possible to collect metrics directly from the container by using the *collect_agent_api* provided by Openbach;
-- Try to use the existing wiring (TCP/UDP) port to send logs (which seem to be written inside a file, as a kind of dump);
+- Try to use the existing wiring (TCP/UDP port) to send logs/metrics (which seem to be written inside a file, as a kind of dump);
 - Try to avoid changes on the classic way of working of openbach to collect statistic;
 - Try to use the Python job, which is running the container, to send statistic (dump at the end).
 
 Further goals:
 - Try to understand how scenarios are issued by the auditorium (SSH commands?);
 - Try to understand if it is possible to run scenarios from a command issued by CLI.
+
+## Week 4
+### 2023-06-12
+- Added example app documentation and screenshots of Auditorium;
+- Deep study on the metrics collection flow of Openbach, it seems that it's quite hard to bypass the normal flow to send stats from container. Written an email to professor Bujari, explaining the updated situation.
+
+### 2023-06-13
+Finished development and trial of basic C/S application. Updated the documentation accordingly.

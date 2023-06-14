@@ -1,7 +1,7 @@
 ---
 
 general:
-  name:            container_installer2
+  name:            container_installer
   description: >
       This Job pulls a docker image either from the public registry or a private one.
   job_version:     '1.0'
@@ -13,7 +13,7 @@ platform_configuration:
   - ansible_system: 'Debian'
     ansible_distribution: 'Ubuntu'
     ansible_distribution_version: '20.04'
-    command: '/usr/bin/env python3 /opt/openbach/agent/jobs/container_installer2/container_installer2.py'
+    command: '/usr/bin/env python3 /opt/openbach/agent/jobs/container_installer/container_installer.py'
     command_stop:
 
 arguments:
