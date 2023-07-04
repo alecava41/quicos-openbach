@@ -9,7 +9,6 @@ import docker
 
 import collect_agent
 
-
 def build_parser():
     parser = argparse.ArgumentParser(description='Docker container runner')
     parser.add_argument('docker_image', type=str, help='Name of docker image to run')
@@ -80,9 +79,10 @@ def main(image, command, name, ports, metrics):
 
                     print(timestamp, name, value)
 
-                    if name == 'stat':
-                        collect_agent.send_stat(timestamp, stat=value)
-                        print("sent statistic")
+                    if name == 'ping':
+                        collect_agent.send_stat(timestamp, ping=value)
+                    else:
+                        collect_agent.send_stat(timestamp, stat1=value)
 
                 except json.JSONDecodeError as e:
                     message = 'Error while decoding json metric {}'.format(e)
@@ -109,6 +109,7 @@ def main(image, command, name, ports, metrics):
 
 
 if __name__ == '__main__':
-    with collect_agent.use_configuration("/opt/openbach/agent/jobs/container_run/container_run_rstat_filter.conf"):
+    with collect_agent.use_configuration("/opt/openbach/agent/jobs/container_run_server"
+                                         "/container_run_server_rstat_filter.conf"):
         args = build_parser().parse_args()
         main(args.docker_image, args.command, args.name, args.ports, args.metrics)

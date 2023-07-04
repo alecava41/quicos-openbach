@@ -35,6 +35,7 @@ import syslog
 import argparse
 import subprocess
 from sys import exit
+from time import sleep
 
 import collect_agent
 

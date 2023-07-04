@@ -1,0 +1,316 @@
+{
+    "name": "network_delay",
+    "description": "This scenario allows to :\n - Launch One Way Delay measurement for both directions\n   (with owamp jobs).\n - Perform two post-processing tasks to compare the\n   time-series and the CDF of the one way delay measurements.\n",
+    "arguments": {},
+    "constants": {
+        "server_ip": "192.168.178.70",
+        "client_ip": "192.168.178.69",
+        "count": "100",
+        "packets_interval": "0.1e"
+    },
+    "openbach_functions": [
+        {
+            "start_job_instance": {
+                "offset": 0.0,
+                "owamp-server": {
+                    "server_address": [
+                        [
+                            "$server_ip"
+                        ]
+                    ]
+                },
+                "entity_name": "server"
+            },
+            "id": 0,
+            "label": "#0"
+        },
+        {
+            "start_job_instance": {
+                "offset": 0.0,
+                "owamp-client": {
+                    "destination_address": [
+                        [
+                            "$server_ip"
+                        ]
+                    ],
+                    "count": [
+                        [
+                            "$count"
+                        ]
+                    ],
+                    "packets_interval": [
+                        [
+                            "$packets_interval"
+                        ]
+                    ]
+                },
+                "entity_name": "client"
+            },
+            "id": 1,
+            "label": "#1",
+            "wait": {
+                "time": 5.0,
+                "launched_ids": [
+                    0
+                ]
+            }
+        },
+        {
+            "stop_job_instances": {
+                "openbach_function_ids": [
+                    0
+                ]
+            },
+            "id": 2,
+            "label": "#2",
+            "wait": {
+                "finished_ids": [
+                    1
+                ]
+            }
+        },
+        {
+            "start_job_instance": {
+                "d-itg_recv": {
+                    "log_buffer_size": [
+                        [
+                            50
+                        ]
+                    ],
+                    "signal_port": [
+                        [
+                            9000
+                        ]
+                    ]
+                },
+                "entity_name": "server"
+            },
+            "id": 3,
+            "label": "#3"
+        },
+        {
+            "start_job_instance": {
+                "d-itg_send": {
+                    "target_address": [
+                        [
+                            "$server_ip"
+                        ]
+                    ],
+                    "sender_address": [
+                        [
+                            "$client_ip"
+                        ]
+                    ],
+                    "dest_path": [
+                        [
+                            "/tmp/"
+                        ]
+                    ],
+                    "granularity": [
+                        [
+                            1000
+                        ]
+                    ],
+                    "traffic_type": [
+                        [
+                            "UDP"
+                        ]
+                    ],
+                    "packet_size": [
+                        [
+                            512
+                        ]
+                    ],
+                    "packet_rate": [
+                        [
+                            1
+                        ]
+                    ],
+                    "port": [
+                        [
+                            8999
+                        ]
+                    ],
+                    "signal_port": [
+                        [
+                            9000
+                        ]
+                    ],
+                    "duration": [
+                        [
+                            10
+                        ]
+                    ],
+                    "meter": [
+                        [
+                            "owdm"
+                        ]
+                    ]
+                },
+                "entity_name": "client"
+            },
+            "id": 4,
+            "label": "#4",
+            "wait": {
+                "time": 1.0,
+                "launched_ids": [
+                    3
+                ]
+            }
+        },
+        {
+            "stop_job_instances": {
+                "openbach_function_ids": [
+                    3
+                ]
+            },
+            "id": 5,
+            "label": "#5",
+            "wait": {
+                "finished_ids": [
+                    4
+                ]
+            }
+        },
+        {
+            "start_job_instance": {
+                "time_series": {
+                    "jobs": [
+                        [
+                            [
+                                1
+                            ],
+                            [
+                                4
+                            ]
+                        ]
+                    ],
+                    "statistics": [
+                        [
+                            "owd_sent",
+                            "owd_received",
+                            "owd_receiver",
+                            "owd_return"
+                        ]
+                    ],
+                    "label": [
+                        [
+                            "One Way Delay (ms)"
+                        ]
+                    ],
+                    "title": [
+                        [
+                            "Both One Way delays time series"
+                        ]
+                    ],
+                    "legend": [
+                        [
+                            "Owamp OWD (server to client)"
+                        ],
+                        [
+                            "Owamp OWD (client to server)"
+                        ],
+                        [
+                            "D-ITG OWD (client to server)"
+                        ],
+                        [
+                            "D-ITG OWD (server to client)"
+                        ]
+                    ],
+                    "filename": [
+                        [
+                            "time_series_owd_client_server"
+                        ]
+                    ]
+                },
+                "entity_name": "controller"
+            },
+            "id": 6,
+            "label": "#6",
+            "wait": {
+                "time": 2.0,
+                "finished_ids": [
+                    0,
+                    1,
+                    3,
+                    4
+                ]
+            }
+        },
+        {
+            "start_job_instance": {
+                "histogram": {
+                    "jobs": [
+                        [
+                            [
+                                1
+                            ],
+                            [
+                                4
+                            ]
+                        ]
+                    ],
+                    "bins": [
+                        [
+                            100
+                        ]
+                    ],
+                    "statistics": [
+                        [
+                            "owd_sent",
+                            "owd_received",
+                            "owd_receiver",
+                            "owd_return"
+                        ]
+                    ],
+                    "label": [
+                        [
+                            "One Way Delay (ms)"
+                        ]
+                    ],
+                    "title": [
+                        [
+                            "Both One Way delay CDF"
+                        ]
+                    ],
+                    "legend": [
+                        [
+                            "Owamp OWD (server to client)"
+                        ],
+                        [
+                            "Owamp OWD (client to server)"
+                        ],
+                        [
+                            "D-ITG OWD (client to server)"
+                        ],
+                        [
+                            "D-ITG OWD (server to client)"
+                        ]
+                    ],
+                    "cumulative": [
+                        [
+                            true
+                        ]
+                    ],
+                    "filename": [
+                        [
+                            "histogram_owd_client_server"
+                        ]
+                    ]
+                },
+                "entity_name": "controller"
+            },
+            "id": 7,
+            "label": "#7",
+            "wait": {
+                "time": 2.0,
+                "finished_ids": [
+                    0,
+                    1,
+                    3,
+                    4
+                ]
+            }
+        }
+    ]
+}

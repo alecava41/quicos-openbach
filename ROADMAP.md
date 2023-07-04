@@ -78,3 +78,46 @@ Further goals:
 
 ### 2023-06-13
 Finished development and trial of basic C/S application. Updated the documentation accordingly.
+
+## Week 5
+### 2023-06-23
+Meeting with professor Bujari: recap and definition of the next steps.  
+Find out how metrics are sent through the wiring (stats saved on a file? job reads it?). Try stats streaming.
+- 3 C, 3 S (containers) (with pull, run, stop (push on dockerhub the containers)) -> with different offsets;
+- understand how to run experiment using cli;
+- print 3 different constants for each C/S (c/s 1 -> 1, c/s -> 2, c/s -> 3)
+  - first use jobs to send stats (additional argument for the container_run job -> constant number to be sent periodically). Must be done by container_remove;
+  - metrics (costant1, costant2) -> read somewhere the metric and then send it;
+  - try streaming.
+
+## Week 6
+### 2023-06-28
+Created new scenario to pull containers, and run 3 clients and 3 servers. Basically it performs the following operations:
+- Pull client/server containers from dockerhub registry (I uploaded my own containers: *alecava41/cs-client* and *alecava41/cs-server*);
+- Run 3 client containers and 3 server containers (starting with different offsets);
+- Stop all the containers after 10 seconds of execution.
+
+This [reference](https://github.com/CNES/openbach-extra/blob/master/apis/auditorium_scripts/README.md#auditorium-scripts) contains the manual to run commands using the shell. 
+It allows to install jobs, run jobs, run scenarios, and so on.  
+
+## 2023-06-29
+Really hard to handle statistics. 
+The documentation says that they're using Grafana, but they're using Chronograf instead.
+
+## 2023-06-30
+Meeting with professor Bujari. 
+Next steps:
+- Two-way binding with docker container to send metrics (read JSON file and so on);
+- Efficiency, clean code don't matter, just make stuff work;
+- Create many files having the same code, but different metrics to collect;
+- Put screenshots about everything and put conclusions.
+
+## Week 7
+### 2023-07-03
+Implemented metrics with bindings from the containers. More details on the specific markdown files. 
+
+## 2023-07-04
+Finished implementation of metrics environment. 
+Simulated a 3 C/S scenarios with metrics exposure.
+Written all markdown files, added screenshots.
+

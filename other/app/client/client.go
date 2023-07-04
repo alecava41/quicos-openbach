@@ -1,6 +1,7 @@
 package main
 
 import (
+    "encoding/json"
 	"fmt"
 	"log"
 	"math/rand"
@@ -10,9 +11,15 @@ import (
 	"time"
 )
 
+type Metric struct {
+	Timestamp int64  `json:"timestamp"`
+	Name      string `json:"name"`
+	Value     float64    `json:"value"`
+}
+
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Println("Usage: client <server-address> <server-port>")
+	if len(os.Args) < 4 {
+		fmt.Println("Usage: client <server-address> <server-port> <metrics-port>")
 		return
 	}
 
@@ -23,7 +30,28 @@ func main() {
 		return
 	}
 
+	metricsPort, err := strconv.Atoi(os.Args[3])
+    if err != nil {
+    	fmt.Println("Invalid metrics port:", err)
+    	return
+    }
+
 	server := fmt.Sprintf("%s:%d", serverAddr, serverPort)
+	metrics := fmt.Sprintf(":%d", metricsPort)
+
+	metricsListener, err := net.Listen("tcp", metrics)
+    if err != nil {
+    	fmt.Println("Error listening on metrics port:", err)
+    	return
+    }
+
+    fmt.Println("waiting for metrics-client connection...")
+
+    metricsConn, err := metricsListener.Accept()
+    if err != nil {
+    	fmt.Println("Error accepting metrics connection:", err)
+    	return
+    }
 
 	conn, err := net.Dial("tcp", server)
 	if err != nil {
@@ -41,9 +69,54 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	for {
-		number := rand.Intn(100) // Generate a random number between 0 and 99
+        // Send stat2 metric
+        number := rand.Intn(4) + 6
 
-		_, err := fmt.Fprintf(conn, "%d\n", number)
+        metric := Metric{
+            Timestamp: time.Now().UnixNano() / int64(time.Millisecond),
+            Name:      "stat2",
+            Value:     float64(number),
+        }
+
+        metricJSON, err := json.Marshal(metric)
+        if err != nil {
+            fmt.Println("Error marshaling metric:", err)
+            return
+        }
+
+        _, err = fmt.Fprintf(metricsConn, "%s\n", metricJSON)
+        if err != nil {
+            fmt.Println("Error sending metric to metrics port:", err)
+            return
+        }
+
+        fmt.Printf("Sent metric: %s\n", metricJSON)
+
+        time.Sleep(1 * time.Second) // Wait for 1 second before sending the next number
+
+		number = rand.Intn(100) // Generate a random number between 0 and 99
+
+		metric = Metric{
+            Timestamp: time.Now().UnixNano() / int64(time.Millisecond),
+        	Name:      "ping",
+        	Value:     float64(number),
+        }
+
+       	metricJSON, err = json.Marshal(metric)
+        if err != nil {
+            fmt.Println("Error marshaling metric:", err)
+        	return
+        }
+
+        _, err = fmt.Fprintf(metricsConn, "%s\n", metricJSON)
+        if err != nil {
+            fmt.Println("Error sending metric to metrics port:", err)
+        	return
+        }
+
+        fmt.Printf("Sent metric: %s\n", metricJSON)
+
+		_, err = fmt.Fprintf(conn, "%d\n", number)
 		if err != nil {
 			fmt.Println("Error sending data to server:", err)
 			return

@@ -27,6 +27,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "client" do |client|
         client.vm.box = "generic/ubuntu2004"
+    client.vm.network "forwarded_port", guest: 9991, host_ip: "0.0.0.0", host: 9991 # metrics_client 1
+    client.vm.network "forwarded_port", guest: 9992, host_ip: "0.0.0.0", host: 9992 # metrics_client 2
+    client.vm.network "forwarded_port", guest: 9993, host_ip: "0.0.0.0", host: 9993 # metrics_client 3
 	client.vm.network "public_network", ip: "192.168.178.69"
 
 	client.vm.hostname = "client"
@@ -39,7 +42,14 @@ Vagrant.configure("2") do |config|
   
   config.vm.define "server" do |server|
         server.vm.box = "generic/ubuntu2004"
-	server.vm.network "forwarded_port", guest: 9999, host_ip: "0.0.0.0", host: 9999
+	server.vm.network "forwarded_port", guest: 9997, host_ip: "0.0.0.0", host: 9997 # server 1
+	server.vm.network "forwarded_port", guest: 9998, host_ip: "0.0.0.0", host: 9998 # server 2
+	server.vm.network "forwarded_port", guest: 9999, host_ip: "0.0.0.0", host: 9999 # server 3
+
+	server.vm.network "forwarded_port", guest: 9994, host_ip: "0.0.0.0", host: 9994 # metrics_server 1
+    server.vm.network "forwarded_port", guest: 9995, host_ip: "0.0.0.0", host: 9995 # metrics_server 2
+    server.vm.network "forwarded_port", guest: 9996, host_ip: "0.0.0.0", host: 9996 # metrics_server 3
+
 	server.vm.network "public_network", ip: "192.168.178.70"
 
 	server.vm.hostname = "server"

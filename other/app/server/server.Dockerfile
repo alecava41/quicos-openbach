@@ -16,8 +16,5 @@ COPY server.go .
 # Build the server binary
 RUN go build -o server .
 
-# Expose the port on which the server listens
-EXPOSE 9999
-
 # Set the command to run the server binary when the container starts
-CMD ["./server"]
+ENTRYPOINT ["/app/server"]
