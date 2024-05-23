@@ -1,0 +1,9 @@
+[controller]
+192.168.178.68 openbach_name=controller
+
+[agent]
+192.168.178.69 openbach_name=client
+192.168.178.70 openbach_name=server
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
